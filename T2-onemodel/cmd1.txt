@@ -1,0 +1,36 @@
+1.grid setting=XY.grd 
+2.length unit(1-m/2-km)=2
+3.anomaly unit(1-mGal/2-g.u.)=1
+4.min structure size=1
+5.bodies setting=Rectan1.dat    
+6.type (0-dg,1-dgz,2-dgx)=0 
+7.output all anomaly(0/1)=1           
+8.output bou(0/1)=1
+9.output anomaly file=model.grd
+=======================================
+         -----------------
+        /\  θ            \ 
+       /  \    FAULT 3D    \
+      /    \    Ver 1.1b    \ 2b
+     \      \    Apr.2016    \
+      \      \      2a        \
+       \     |-----------------| h1
+        \    /                 /
+         \  /                 /
+          \/  α             /
+          |------------------|   h2
+
+Author: Dr. Shi Chen from CEA-IGP
+E-mail: chenshi80@gmail.com
+
+-------------参数说明----------------------
+1.观测网格设置
+2.长度单位
+3.异常单位
+4.最小构造异常精度（FS/N）（暂未使用）
+5.模型参数设置文件
+6.输出异常类型
+7.是否输出给个模型异常
+8.是否输出模型边界
+9.输出观测异常数据文件名
+============================================
