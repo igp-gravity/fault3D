@@ -1,0 +1,13 @@
+绘图数据特征值eigval=1.70141e+038
+场源参数输入数据文件名source_file=rectan21.dat
+计算点Z坐标方向z_direction（1:方向向下；-1:方向向上）=1
+计算点坐标单位coordinate_unite（1:m；2:km）=2
+计算点数据类型input_format（1:平面规则网；2:曲面规则网；3:平面不规则网；4:曲面不规则网）=1
+计算点坐标输入数据文件名input_file（规则网时用GRD格式，非规则网用DAT格式）=xy.grd
+计算点场值输出数据文件名output_file（规则网时用GRD格式，非规则网用DAT格式）=gravity_21.grd
+磁力异常单位magnetic_unit（1:nT）=1
+重力异常单位gravity_unit（1:mgal;2:g.u.）=1
+计算方法method（1:重力；2:重力一阶导；3:重力二阶导;4:磁力；5:磁力一阶导；6:磁力二阶垂导）=1
+计算点磁异常方向dai0(倾角)，dax0(与X轴夹角)，day0(与Y轴夹角)(method:1,2,3)=50,85,5
+计算点一阶导数方向dai1(倾角)，dax1(与X轴夹角)，day1(与Y轴夹角)(method:2,3)=90,45,45
+计算点二阶导数方向dai2(倾角)，dax2(与X轴夹角)，day2(与Y轴夹角)(method:3)=90,45,45

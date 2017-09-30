@@ -1,7 +1,7 @@
 1.grid setting=XY.grd 
 2.length unit(1-m/2-km)=2
 3.anomaly unit(1-mGal/2-g.u.)=1
-4.min structure size=3
+4.min structure size=1
 5.bodies setting=Rectan.dat    
 6.type (0-dg,1-dgz,2-dgx)=0 
 7.output all anomaly(0/1)=0           

@@ -12,8 +12,8 @@ c
 c         -----------------
 c        /\  θ            \ 
 c       /  \    FAULT 3D    \
-c      /    \    Ver 1.2     \ 2b
-c     \      \    Apr.2016    \
+c      /    \    Ver 1.3     \ 2b
+c     \      \    Sep.2017    \
 c      \      \      2a        \
 c       \     |-----------------| h1
 c        \    /                 /
@@ -23,7 +23,7 @@ c          |------------------|   h2
 c--------------------------------------------------------------------------c
 c     Code by Dr. Shi CHEN  E-mail:chenshi80@gmail.com
 c     Date:2013-11-28
-c     Last coding:2016-04-14
+c     Last coding:2017-09-29
 c--------------------------------------------------------------------------c
       PROGRAM Sp_Fault3D
 	PARAMETER  (pi=3.14159267,G=6.672)
@@ -37,14 +37,14 @@ c--------------------------------------------------------------------------c
       real dx,dy,a,b,length,width,h1,h2,alfa,pointx,pointy,topw,botw
       real tx1,tx2,tx3,rx,ry,rms,xita,fac,facg
       real t1,t2,tt1,tt2               ! this is for time check      
-c      inname='cmd.txt'
+c      inname='cmd1.txt'
 	call readparams(inname)
       write(*,*) '========================================'
       write(*,*) 'c         -----------------            c'
       write(*,*) 'c        /\  θ            \           c'
       write(*,*) 'c       /  \    FAULT 3D    \          c'
-      write(*,*) 'c      /    \    Ver 1.2     \ 2b      c'
-      write(*,*) 'c     \      \    Apr.2016    \        c'
+      write(*,*) 'c      /    \    Ver 1.3     \ 2b      c'
+      write(*,*) 'c     \      \    Sep.2017    \        c'
       write(*,*) 'c      \      \      2a        \       c'
       write(*,*) 'c       \     |-----------------| h1   c'
       write(*,*) 'c        \    /                 /      c'
@@ -79,7 +79,7 @@ c      inname='cmd.txt'
       !mGal=10 g.u.
       !km=1000 m
 	call cpu_time(t1)
-	tt1=secnds(0.0)
+c	tt1=secnds(0.0)
 	gall=0.0
       do i=1,mlen
       rou=bodies(i,1)-rou0
@@ -113,7 +113,7 @@ c      inname='cmd.txt'
       endif
       if (isalldata.eq.1) then
        fbou1=trim(btype(i,2))//'.grd'
-	call WriteGRD(fbou1,m,n,gb
+	call WriteGRD(fbou1,m,n,gb*facg*fac
      +	,Xmin,Xmax,Ymin,Ymax,Zmin,Zmax)
       endif
       if (isoutbou.eq.1) then
@@ -145,10 +145,10 @@ c      inname='cmd.txt'
       gall=gall+gb
       enddo
 
-      tt2=secnds(tt1)
+c      tt2=secnds(tt1)
       call cpu_time(t2)
-      write(*,40) t2-t1,tt2
-40    format(' del time(seconds) = ', 2f5.2,/)
+      write(*,40) t2-t1 !,tt2
+40    format(' Total time(seconds) = ', 1f5.2,/)
       write(*,*) 'RMS',rms
 c---------------------------output重力数据--------------------------------c
       gall=facg*gall*fac
@@ -240,11 +240,12 @@ c---------------------------------------------------------------c
       enddo
       end subroutine 
 c---------------------------------------------------------------c
-      SUBROUTINE outbou(fbou1,width,length,pointx,pointy,it,xita)
+      SUBROUTINE outbou(fbou1,width0,length,pointx,pointy,it,xita)
       character*(*) fbou1
-      real width,length,pointx,pointy,xita
+      real width0,length,pointx,pointy,xita
+         width=width0*sind(xita)
          if (abs(xita-90)>1.0E-30) then
-         shift=width/tand(xita)
+         shift=width0*cosd(xita) !/tand(xita)
          else
          shift=0.0
          endif
@@ -268,14 +269,15 @@ c---------------------------------------------------------------c
       
       end subroutine   
           
-      SUBROUTINE outbou2(fbou1,width,length,pointx,pointy,w1,it,xita)
+      SUBROUTINE outbou2(fbou1,width0,length,pointx,pointy,w1,it,xita)
       character*(*) fbou1
-      real width,length,pointx,pointy,w1,xita
+      real width0,length,pointx,pointy,w1,xita
          if (abs(xita-90)>1.0E-30) then
-         st=width/tand(xita)
+         st=width0*cosd(xita) !/tand(xita)
          else
          st=0.0
          endif
+         width=width0*sind(xita)
          call search_unit(0,nunit_in)
         open(nunit_in,file=fbou1,status='unknown')
         write(nunit_in,*) 5,1 
@@ -407,8 +409,8 @@ c------------------------------------------------------------------c
  
 
       CALL CALCULATE_para(M,N,Me,Ne,infft)
-      !Me=128 ! 512
-      !Ne=Me
+c      Me=1024 !256
+c      Ne=Me
       write(*,*) M,N,Me,Ne
 	if (me>=ne) then
        MAXNM=me
@@ -446,13 +448,13 @@ c------------------------------------------------------------------c
 	  enddo
       enddo
       call cpu_time(t11)
-      tts1=secnds(0.0)
+c      tts1=secnds(0.0)
         CALL RECTAN_gravity_sub(me,ne,x_point,y_point,z_point,
      +    field,nbody,X1,X2,Y1,Y2,Z1,Z2,dz,EPS,eigval,density)
       call cpu_time(t12)
-      tts2=secnds(tts1)
-      write(*,20) t12-t11,tts2
-20    format(' spatial forward time(seconds) = ', 2f10.5,/)
+c      tts2=secnds(tts1)
+      write(*,20) t12-t11 !,tts2
+20    format(' spatial forward time(seconds) = ', 1f12.8,/)
       
       call waveuvw2(w,u,v,me,ne,dx,dy)
 
@@ -468,7 +470,7 @@ c------------------------------------------------------------------c
 	    endif
         	
 	call cpu_time(t1)
-      tts1=secnds(0.0)	
+c      tts1=secnds(0.0)	
 	do i=1,me
 	  do j=1,ne
           tmp4=exp(-w(i,j)*h2)
@@ -493,17 +495,21 @@ c     +/((0,1)*u(i,j)*r1-w(i,j)))/u(i,j)
 		endif	
         if (abs(v(i,j)-u(i,j)*rxt)>1.0E-30) then
 c         write(*,*) v(i,j)
-         tmp3=-2*(0,1)*sin((v(i,j)-u(i,j)*rxt)*b)/(v(i,j)-u(i,j)*rxt) !new add xita
+c         tmp3=-2*(0,1)*sin((v(i,j)-u(i,j)*rxt)*b)/(v(i,j)-u(i,j)*rxt) !new add xita
+          tmp3=-2*(0,1)*sin((v(i,j)-u(i,j)*rxt)*b*sind(xita))
+     +     /(v(i,j)-u(i,j)*rxt) !new add xita        
         else
-         tmp3=-2*(0,1)*b
+c         tmp3=-2*(0,1)*b
+         tmp3=-2*(0,1)*b*sind(xita)
         endif
           E=tmp2*tmp3		    
       else 
-c          E=4*a*b*(h2-h1)+b*r1*(h2*h2-h1*h1)
-         E=4*a*b*(h2-h1)*sind(xita)+b*r1*(h2*h2-h1*h1) !new add xita
+c         E=4*a*b*(h2-h1)+b*r1*(h2*h2-h1*h1)
+c         E=4*a*b*(h2-h1)*sind(xita)+b*r1*(h2*h2-h1*h1) !new add xita
+         E=4*a*b*(h2-h1)*sind(xita)+b*r1*(h2-h1)*(h2-h1)*sind(xita) !new add xita 20170929
+c         write(*,*) E,xita,r1,b*r1*(h2*h2-h1*h1),b*r1*(h2-h1)*(h2-h1)
 	endif
 	  ! pointx=0.0
-
 	tmp1=exp(((Xmax+Xmin)*u(i,j)/2+(Ymax+Ymin)*v(i,j)/2)*(0,1))
 	tmp0=exp(((XXmin-XXmax)*u(i,j)/2+(YYmin-YYmax)*v(i,j)/2)*(0,1))
 c	tmp0=exp(((XXmin-XXmax+dx)*u(i,j)/2
@@ -519,22 +525,24 @@ c     +	+(YYmin-YYmax+dy)*v(i,j)/2)*(0,1))
 		vzr(i,j)=real(E)
 		vzi(i,j)=imag(E)
 	    g(i,j)=sqrt(real(E)*real(E)+imag(E)*imag(E))
+          
 	  enddo
 	enddo
 	
       call cpu_time(t2)
-      tts2=secnds(tts1)
-      write(*,30) t2-t1,tts2
-30    format(' spectral forward time(seconds) = ', 2f10.5,/)
-
+c      tts2=secnds(tts1)
+      write(*,30) t2-t1 !,tts2
+30    format(' spectral forward time(seconds) = ', 1f12.8,/)
 
 	call FFT2(vzr,vzi,me,ne,1,TREAL,TIMAG,MAXNM)
-
+      
       call cpu_time(t3)
       write(*,40) t3-t2
-40    format(' iFFT time(seconds) = ', f10.5,/)	
+c      write(*,*) minval(vzi),maxval(vzi)
+40    format(' iFFT time(seconds) = ', f12.8,/)	
       rmstmp=0.0
 	rvalmax=-1.E10
+            
 	do i=1,m
 	 do j=1,n
 	  rmstmp1=2*pi*bigG*midu*vzr(i+(me-m)/2,j+(ne-n)/2)

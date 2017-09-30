@@ -4,6 +4,13 @@
 2.61,0.5,2.5,2.0,4.0,R,30,120,GR1,2.0,0.0
 
 ======================
+Parameter setting：
+======================
+Number,reference density(g/cm3)
+Center Coordinate of Model,x,y
+Density,Top depth, Bottom detph，Width a，Length b，dip flag，dip angle，strike angle，Model name,Coordinate X,Coordinate Y
+
+======================
 参数设置：
 ======================
 模型个数,背景密度g/cm3
